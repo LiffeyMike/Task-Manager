@@ -132,7 +132,7 @@ type Mutation {
 }
 ```
 
-- **Framework choice** _(open)_: **Spring for GraphQL** (official, schema-first, integrates with Spring Security) is the default. **Netflix DGS** is more feature-rich (codegen, testing) but heavier — decide before writing much schema.
+- **Framework choice** (**decided: Spring for GraphQL**): official, schema-first, integrates with Spring Security. **Netflix DGS** was the more feature-rich alternative (codegen, testing) but heavier; not adopted.
 - **N+1 avoidance**: use **DataLoader** batching for `members`, `definition`, `completion` resolvers from the start.
 - **Errors**: map domain errors to typed GraphQL errors with stable codes, not raw exceptions.
 
@@ -230,7 +230,7 @@ Treated as first-class per SPEC §2; assume eventual public exposure.
 | # | Decision | Current lean |
 |---|----------|--------------|
 | 1 | Persistence: JPA vs jOOQ/JDBC (**decided: JPA**) | jOOQ/native SQL for analytics if needed |
-| 2 | GraphQL: Spring for GraphQL vs DGS | Spring for GraphQL |
+| 2 | GraphQL: Spring for GraphQL vs DGS (**decided: Spring for GraphQL**) | — |
 | 3 | Auth: JWT access + rotating refresh token, via **GraphQL mutations** (**decided**) | Ephemeral signing key for v1; persisted key is an extension goal |
 | 4 | Recurrence: iCal RRULE via **ical4j**, multiple occurrences/week allowed (**decided**) | — |
 | 5 | Age: stored vs computed-on-read | Computed |
@@ -243,6 +243,6 @@ Treated as first-class per SPEC §2; assume eventual public exposure.
 
 ## 10. Next steps
 
-1. Resolve the highest-leverage open decisions (#4, #7 block the data model; #2 blocks schema work).
+1. Resolve any remaining highest-leverage open decisions (the data-model and schema blockers — #2, #4, #7 — are now decided).
 2. Write the initial Flyway migration for §5 tables.
 3. Stand up a walking skeleton: Spring Boot + one GraphQL query + Postgres + a React page that reads it.

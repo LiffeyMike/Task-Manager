@@ -28,8 +28,8 @@ A PR is **not done** until: new code has tests at the appropriate layer, `./grad
 
 **Goal:** one command brings up a running system; one GraphQL query renders in the browser end-to-end. Establishes the CI + test harness every later PR relies on.
 
-- [ ] **PR 0.1 — Gradle + Spring Boot backend skeleton.** Single Gradle module (§3 package layout as empty packages), Spring Boot + Spring for GraphQL + Spring Security starters, `/graphql` endpoint with a trivial `ping: String!` query. Config read from env vars (§7).
-  - *Tests:* `GraphQlTester` integration test asserting `ping` resolves; context-loads smoke test.
+- [ ] **PR 0.1 — Multi-module Gradle + Spring Boot skeleton.** Root Gradle build with `settings.gradle` including `app` + `common` (feature modules carved out later, per §3); Gradle wrapper + a `build-logic` convention plugin at root; `app` is the only bootable module (Spring Boot + Spring for GraphQL + Spring Security starters) with a `/graphql` endpoint serving a trivial `ping: String!` query; `common` is a `java-library` with no feature deps. Config read from env vars (§7).
+  - *Tests:* `GraphQlTester` integration test (in `app`) asserting `ping` resolves; context-loads smoke test; `./gradlew build` assembles a single boot jar from the modules.
 - [ ] **PR 0.2 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
   - *Tests:* Testcontainers spins up Postgres; Flyway `migrate` + `validate` pass on empty schema in CI.
 - [ ] **PR 0.3 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.

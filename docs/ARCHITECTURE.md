@@ -51,19 +51,22 @@
 
 ## 3. Backend structure
 
-Layered, package-by-feature within a single Gradle module to start (split into modules only if it earns its keep).
+Layered, feature-per-**Gradle module** (**decided**): strong, compile-time-enforced separation between features. One bootable `app` module assembles the feature library modules into a single jar; features depend on `common` and on each other only through published API interfaces, never internals.
 
 ```
-com.household.taskmanager
-├── config/            Spring config, security, GraphQL wiring
-├── auth/              registration, login, sessions, invites
-├── household/         households, memberships, tenancy resolution
-├── task/              definitions, instances, recurrence, completions
-├── analytics/         effort-weighted aggregation queries
-└── common/            errors, pagination, shared types
+taskmanager/                (root: gradle wrapper, settings.gradle, build-logic/)
+├── build-logic/            convention plugin — shared Java 21 + Spring BOM + test config
+├── app/                    @SpringBootApplication; the only bootable module; depends on features
+├── common/                 errors, pagination, shared types; no feature dependencies
+├── auth/
+├── household/
+├── task/
+└── analytics/
 ```
 
-Within a feature, the conventional layering:
+Each feature module owns its package `io.github.liffeymike.taskmanager.<feature>`, its own `*.graphqls` schema fragment (Spring for GraphQL merges all schema files on the classpath), controllers, services, and entities. Grow it in stages — start with `app` + `common`, carve out each feature module as its epic is built.
+
+Within a feature module, the conventional layering:
 
 - **GraphQL controllers** (`@Controller` + `@SchemaMapping` / `@QueryMapping`) — thin; translate schema ↔ domain.
 - **Service layer** — business rules (carry-over, recurrence, effort weighting). The interesting logic lives here.

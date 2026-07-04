@@ -28,11 +28,13 @@ A PR is **not done** until: new code has tests at the appropriate layer, `./grad
 
 **Goal:** one command brings up a running system; one GraphQL query renders in the browser end-to-end. Establishes the CI + test harness every later PR relies on.
 
-- [ ] **PR 0.1 — Multi-module Gradle + Spring Boot skeleton.** Root Gradle build with `settings.gradle` including `app` + `common` (feature modules carved out later, per §3); Gradle wrapper + a `build-logic` convention plugin at root; `app` is the only bootable module (Spring Boot + Spring for GraphQL + Spring Security starters) with a `/graphql` endpoint serving a trivial `ping: String!` query; `common` is a `java-library` with no feature deps. Config read from env vars (§7).
-  - *Tests:* `GraphQlTester` integration test (in `app`) asserting `ping` resolves; context-loads smoke test; `./gradlew build` assembles a single boot jar from the modules.
-- [ ] **PR 0.2 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
+- [ ] **PR 0.1 — Ping walking skeleton (chunk A).** Multi-module Gradle root under `server/` (Kotlin DSL; `settings.gradle.kts` including `app`; wrapper at the `server/` root); `app` is the only bootable module (Spring Boot + Spring for GraphQL + Spring Security) serving a trivial `ping: String!` query at `/graphql`, behind a placeholder `SecurityConfig` (`permitAll` + CSRF off — replaced in Epic 1). Config read from env vars (§7). Guide: `docs/features/pr-0.1a-ping-walking-skeleton.md`.
+  - *Tests:* `HttpGraphQlTester` integration test asserting `ping` resolves end-to-end through the security filter chain; context-loads smoke test; `./gradlew :app:build` green.
+- [ ] **PR 0.2 — `common` module + `build-logic` convention plugin (chunk B).** Add a `common` `java-library` subproject (`include("common")`, no feature deps); extract the shared Java 21 toolchain, Spring dependency-management BOM, and test config into a `build-logic` convention plugin applied by both `app` and `common`. Completes the multi-module story and removes per-module build duplication (§3).
+  - *Tests:* `common` compiles and is consumable from `app`; `./gradlew build` assembles a single boot jar from both modules; existing `app` tests stay green under the convention plugin.
+- [ ] **PR 0.3 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
   - *Tests:* Testcontainers spins up Postgres; Flyway `migrate` + `validate` pass on empty schema in CI.
-- [ ] **PR 0.3 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.
+- [ ] **PR 0.4 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.
   - *Tests:* Vitest + RTL component test with MSW mocking `ping`; codegen runs in CI and fails on schema drift.
 
 ---

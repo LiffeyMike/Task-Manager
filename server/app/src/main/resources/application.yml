@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: taskmanager
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/taskmanager}
+    username: ${SPRING_DATASOURCE_USERNAME:taskmanager}
+    password: ${SPRING_DATASOURCE_PASSWORD:taskmanager}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate

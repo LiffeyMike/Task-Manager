@@ -15,7 +15,7 @@
 | Layer       | Tooling                                                    | What it covers                                                                                                  |
 | ----------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | Unit        | JUnit 5 + AssertJ + Mockito                                | Service-layer business rules in isolation (carry-over, recurrence expansion, effort weighting, token rotation). |
-| Integration | Spring Boot Test + **Testcontainers (Postgres)**           | GraphQL request → resolver → service → real DB. Uses `GraphQlTester`.                                           |
+| Integration | Spring Boot Test + **Testcontainers 2.x (Postgres)**       | GraphQL request → resolver → service → real DB. Uses `GraphQlTester`. Shared singleton container via `@ServiceConnection` (see `AbstractIntegrationTest`). |
 | Security    | Spring Security Test                                       | Auth required/exempt, tenant isolation, role gates.                                                             |
 | Migration   | Flyway `migrate` + `validate` in CI against Testcontainers | Every migration applies cleanly from empty and is validated.                                                    |
 | Frontend    | Vitest + React Testing Library; MSW for GraphQL mocking    | Component behaviour + query/mutation wiring.                                                                    |
@@ -30,9 +30,9 @@ A PR is **not done** until: new code has tests at the appropriate layer, `./grad
 
 - [x] **PR 0.1 — Ping walking skeleton (chunk A).** Multi-module Gradle root under `server/` (Kotlin DSL; `settings.gradle.kts` including `app`; wrapper at the `server/` root); `app` is the only bootable module (Spring Boot + Spring for GraphQL + Spring Security) serving a trivial `ping: String!` query at `/graphql`, behind a placeholder `SecurityConfig` (`permitAll` + CSRF off — replaced in Epic 1). Config read from env vars (§7). Guide: `docs/features/pr-0.1a-ping-walking-skeleton.md`.
   - _Tests:_ `HttpGraphQlTester` integration test asserting `ping` resolves end-to-end through the security filter chain; context-loads smoke test; `./gradlew :app:build` green.
-- [ ] **PR 0.2 — `common` module + `build-logic` convention plugin (chunk B).** Add a `common` `java-library` subproject (`include("common")`, no feature deps); extract the shared Java 21 toolchain, Spring dependency-management BOM, and test config into a `build-logic` convention plugin applied by both `app` and `common`. Completes the multi-module story and removes per-module build duplication (§3).
+- [x] **PR 0.2 — `common` module + `build-logic` convention plugin (chunk B).** Add a `common` `java-library` subproject (`include("common")`, no feature deps); extract the shared Java 21 toolchain, Spring dependency-management BOM, and test config into a `build-logic` convention plugin applied by both `app` and `common`. Completes the multi-module story and removes per-module build duplication (§3).
   - _Tests:_ `common` compiles and is consumable from `app`; `./gradlew build` assembles a single boot jar from both modules; existing `app` tests stay green under the convention plugin.
-- [ ] **PR 0.3 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
+- [x] **PR 0.3 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
   - _Tests:_ Testcontainers spins up Postgres; Flyway `migrate` + `validate` pass on empty schema in CI.
 - [ ] **PR 0.4 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.
   - _Tests:_ Vitest + RTL component test with MSW mocking `ping`; codegen runs in CI and fails on schema drift.

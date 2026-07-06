@@ -10,7 +10,7 @@
 | Layer | Choice | Notes |
 |-------|--------|-------|
 | **Backend language** | **Java** (LTS — 21) | Build with **Gradle**. |
-| **Backend framework** | **Spring Boot** + **Spring for GraphQL** | Netflix DGS is a viable alternative; see §4. |
+| **Backend framework** | **Spring Boot 4** (Spring Framework 7) + **Spring for GraphQL** | Netflix DGS is a viable alternative; see §4. |
 | **API style** | **GraphQL** | Single typed schema; SPA is the primary consumer. |
 | **Frontend** | **React SPA**, **TypeScript** | Served as static assets; talks to the GraphQL endpoint. |
 | **Database** | **PostgreSQL** | Real SQL, migrations, strong multi-tenant support. |
@@ -54,14 +54,15 @@
 Layered, feature-per-**Gradle module** (**decided**): strong, compile-time-enforced separation between features. One bootable `app` module assembles the feature library modules into a single jar; features depend on `common` and on each other only through published API interfaces, never internals.
 
 ```
-taskmanager/                (root: gradle wrapper, settings.gradle, build-logic/)
-├── build-logic/            convention plugin — shared Java 21 + Spring BOM + test config
-├── app/                    @SpringBootApplication; the only bootable module; depends on features
-├── common/                 errors, pagination, shared types; no feature dependencies
-├── auth/
-├── household/
-├── task/
-└── analytics/
+taskmanager/                (repo root: docs/, .github/, compose.yaml, server/)
+└── server/                 gradle root: wrapper, settings.gradle.kts, build-logic/
+    ├── build-logic/        convention plugin — shared Java 21 toolchain + test config
+    ├── app/                @SpringBootApplication; the only bootable module; depends on features
+    ├── common/             errors, pagination, shared types; no feature dependencies
+    ├── auth/
+    ├── household/
+    ├── task/
+    └── analytics/
 ```
 
 Each feature module owns its package `io.github.liffeymike.taskmanager.<feature>`, its own `*.graphqls` schema fragment (Spring for GraphQL merges all schema files on the classpath), controllers, services, and entities. Grow it in stages — start with `app` + `common`, carve out each feature module as its epic is built.

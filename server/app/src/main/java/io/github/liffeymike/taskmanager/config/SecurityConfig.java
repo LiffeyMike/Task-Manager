@@ -11,7 +11,7 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     // TODO(Epic 1): replace permitAll with bearer-token auth
-    http.csrf(csrf -> csrf.disable()).authorizeRequests(auth -> auth.anyRequest().permitAll());
+    http.csrf(csrf -> csrf.disable()).authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
     return http.build();
   }
 }

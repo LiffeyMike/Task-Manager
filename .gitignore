@@ -1,5 +1,6 @@
 kls_database.db
 
+# Server
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -18,17 +19,9 @@ bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# Client 
+node_modules
+dist
 
-
-### VS Code ###
-.vscode/
 
 docs/features**

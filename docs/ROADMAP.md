@@ -34,7 +34,7 @@ A PR is **not done** until: new code has tests at the appropriate layer, `./grad
   - _Tests:_ `common` compiles and is consumable from `app`; `./gradlew build` assembles a single boot jar from both modules; existing `app` tests stay green under the convention plugin.
 - [x] **PR 0.3 — Dev environment & Flyway.** `docker compose` for app + Postgres (§7); Flyway wired with an empty baseline migration; CI runs `./gradlew check` with Testcontainers.
   - _Tests:_ Testcontainers spins up Postgres; Flyway `migrate` + `validate` pass on empty schema in CI.
-- [ ] **PR 0.4 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.
+- [x] **PR 0.4 — React SPA skeleton.** Vite + TypeScript + Apollo Client + GraphQL Code Generator; a single page that calls `ping` and renders the result. Proxy config for `/graphql`.
   - _Tests:_ Vitest + RTL component test with MSW mocking `ping`; codegen runs in CI and fails on schema drift.
 
 ---

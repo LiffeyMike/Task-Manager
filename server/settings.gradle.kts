@@ -10,3 +10,4 @@ plugins {
 
 include("common")
 include("app")
+include("auth")

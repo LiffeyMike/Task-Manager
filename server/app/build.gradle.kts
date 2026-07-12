@@ -9,6 +9,7 @@ version = "0.0.1-SNAPSHOT"
 
 dependencies {
     implementation(project(":common"))
+    implementation(project(":auth"))
 
     // Runtime
     implementation("org.springframework.boot:spring-boot-starter-graphql")
